@@ -1,92 +1,56 @@
-import React, {Component} from "react";
-import {View, Text, Image, Button, StyleSheet} from 'react-native';
+import React, { Component } from "react";
+import { View, Text, StyleSheet, FlatList} from 'react-native';
 
-const Card = ({title, description}) => {
-  return(
-    <View style={sytles.card}>
-      <Text style={sytles.title}>{title}</Text>
-      <Text style={sytles.description}>{description}</Text>
-    </View>
-  );
-};
-
-class App extends Component{
+class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            nome: ""
+          feed: [
+            {id: '1', nome: 'João', idade: '20'},
+            {id: '2', nome: 'Maria', idade: '30'},
+            {id: '3', nome: 'Ana', idade: '40'},
+            {id: '4', nome: 'Clara', idade: '50'},
+          ]
         };
-        this.entrar = this.entrar.bind(this);
-    }
-
-    entrar(nome) {
-        this.setState({
-            nome: nome
-        })
     }
   render() {
     return(
-      <View style={sytles.container}>
-        <Text style={{color: '#4B0082', fontSize: 25, margin: 10}}>
-          Aplicação Inicial
-          </Text>
-        <Text>
-          Primeiro Projeto - Padrão</Text>
-          <Button title="entrar" onPress={() => this.entrar('Seja bem vindo a aplicação')}
-          />
-          <Text style={{fontSize: 12, color: 'green', textAlign: 'center'}}>
-            {this.state.nome}
-          </Text>
-          <Image
-          source={{uri: 'https://inovaveterinaria.com.br/wp-content/uploads/2015/04/gato-sem-raca-INOVA-scaled.jpg'}}
-          style={{width: 300, height: 300}}
-          />
-
-        <Card title='Título' description='Este é um exemplo de Card'
+      <View style={styles.container}>
+        <FlatList
+          data={this.state.feed}
+          keyExtractor={(item) => item.id}
+          renderItem={({item}) => <Person data={item}/>}
         />
+      </View>     
+    );
+  }
+}
 
-          <Jobs
-          largura={200} altura={200}
-          />
+const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    areaPessoa: {
+      backgroundColor: 'yellow',
+      height: 100,
+      marginBottom: 15,
+    },
+    textoPessoa: {
+      color: 'red',
+      fontSize: 18,
+    },
+}); 
+
+export default App;
+
+class Person extends Component{
+  render(){
+    return(
+      <View style={styles.areaPessoa}>
+        <Text style={styles.textoPessoa}>Nome: {this.props.nome}</Text>
+        <Text style={styles.textoPessoa}>Idade: {this.props.idade}</Text>
       </View>
     );
   }
 }
-export default App;
 
-const sytles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "flex-start",
-    backgroundColor: 'yellow',
-  },
-  title: {
-    fontSize: 16,
-    margin: 8,
-  },
-  description: {
-    fontSize: 11,
-    color: 'green',
-  },
-  card: {
-    width: 300,
-    height: 200,
-    padding: 20,
-    borderRadius: 10,
-  },
-})
-
-class Jobs extends Component {
-    render(){
-        let img = 'https://ciclovivo.com.br/wp-content/uploads/2016/08/foto_natureza_2.jpeg';
-        return(
-            <View>
-                <Image
-                source={{uri: img}}
-                style={{width: this.props.largura, height: this.props.altura}}
-                />
-                <Text style={{textAlign: 'center'}}>Imagem de Natureza</Text>
-            </View>
-        );
-    }
-}
