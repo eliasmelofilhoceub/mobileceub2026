@@ -1,92 +1,95 @@
-import React, {Component} from "react";
-import {View, Text, Image, Button, StyleSheet} from 'react-native';
 
-const Card = ({title, description}) => {
-  return(
-    <View style={sytles.card}>
-      <Text style={sytles.title}>{title}</Text>
-      <Text style={sytles.description}>{description}</Text>
-    </View>
-  );
-};
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {Component} from "react";
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Keyboard} from 'react-native';
 
 class App extends Component{
     constructor(props) {
-        super(props);
-        this.state = {
-            nome: ""
-        };
-        this.entrar = this.entrar.bind(this);
-    }
+      super(props);
+      this.state = {
+        input: '',
+        nome: ''
+      };
 
-    entrar(nome) {
-        this.setState({
-            nome: nome
+      this.gravaNome = this.gravaNome.bind(this);
+      }
+
+      async componentDidMount() {
+        await AsyncStorage.getItem().then((value) => {
+          this.setState({nome: value})
         })
-    }
+      }
+
+      async componentDidUpdate(_, prevState) {
+        const nome = this.state.nome;
+
+        if(prevState !== nome) {
+          await AsyncStorage.setItem('nome', nome);
+        }
+      }
+
+      gravaNome() {
+        this.setState({
+          nome: this.state.input
+        });
+        alert('Salvo com sucesso!!!')
+        Keyboard.dismiss();
+      }
+    
+
   render() {
-    return(
-      <View style={sytles.container}>
-        <Text style={{color: '#4B0082', fontSize: 25, margin: 10}}>
-          Aplicação Inicial
-          </Text>
-        <Text>
-          Primeiro Projeto - Padrão</Text>
-          <Button title="entrar" onPress={() => this.entrar('Seja bem vindo a aplicação')}
-          />
-          <Text style={{fontSize: 12, color: 'green', textAlign: 'center'}}>
-            {this.state.nome}
-          </Text>
-          <Image
-          source={{uri: 'https://inovaveterinaria.com.br/wp-content/uploads/2015/04/gato-sem-raca-INOVA-scaled.jpg'}}
-          style={{width: 300, height: 300}}
+      return(
+        <View style={sytles.container}>
+        <View style={sytles.ViewInput}>
+          <TextInput
+          style={sytles.input}
+          value={this.state.input}
+          onChangeText={(text) => this.setState({input: text})}
+          underlineColorAndroid="transparent"
           />
 
-        <Card title='Título' description='Este é um exemplo de Card'
-        />
+          <TouchableOpacity onPress={this.gravaNome}>
+            <Text style={sytles.botao}>+</Text>
+          </TouchableOpacity>
 
-          <Jobs
-          largura={200} altura={200}
-          />
-      </View>
+          <Text style={sytles.nome}>{this.state.nome}</Text>
+        </View>
+        </View>
+
     );
   }
+
 }
-export default App;
+
 
 const sytles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "flex-start",
-    backgroundColor: 'yellow',
+    marginTop: 20,
   },
-  title: {
-    fontSize: 16,
-    margin: 8,
+  ViewInput: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  description: {
-    fontSize: 11,
-    color: 'green',
+  input: {
+    width: 360,
+    height: 40,
+    borderColor: 'red',
+    borderWidth: 1,
+    padding: 10,
   },
-  card: {
-    width: 300,
-    height: 200,
-    padding: 20,
-    borderRadius: 10,
+  botao: {
+    backgroundColor: 'black',
+    color: '#FFF',
+    height: 40,
+    padding: 10,
+    marginLeft: 4,
   },
-})
+  nome: {
+    marginTop: 15,
+    fontSize: 30,
+    textAlign: 'center',
+  }
+});
 
-class Jobs extends Component {
-    render(){
-        let img = 'https://ciclovivo.com.br/wp-content/uploads/2016/08/foto_natureza_2.jpeg';
-        return(
-            <View>
-                <Image
-                source={{uri: img}}
-                style={{width: this.props.largura, height: this.props.altura}}
-                />
-                <Text style={{textAlign: 'center'}}>Imagem de Natureza</Text>
-            </View>
-        );
-    }
-}
+export default App;
