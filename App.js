@@ -1,92 +1,92 @@
 import React, {Component} from "react";
-import {View, Text, Image, Button, StyleSheet} from 'react-native';
-
-const Card = ({title, description}) => {
-  return(
-    <View style={sytles.card}>
-      <Text style={sytles.title}>{title}</Text>
-      <Text style={sytles.description}>{description}</Text>
-    </View>
-  );
-};
+import {View, Text, StyleSheet, Switch} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import Slider from "@react-native-community/slider";
 
 class App extends Component{
     constructor(props) {
-        super(props);
-        this.state = {
-            nome: ""
-        };
-        this.entrar = this.entrar.bind(this);
-    }
+      super(props);
+      this.state = {
+        status: false,
+        pizza: 0,
+        pizzas: [
+          {key: 1, nome: " Calabresa", valor: 50.00},
+          {key: 1, nome: " Cachorro-Quente", valor: 60.00},
+          {key: 1, nome: " Frango", valor: 80.00},
+          {key: 1, nome: " Milho", valor: 45.00},
+          {key: 1, nome: " Portuguesa", valor: 55.00},
+          {key: 1, nome: " Marguerita", valor: 70.00},
+          {key: 1, nome: " Marguerita", valor: 70.00},
+          {key: 1, nome: " Marguerita", valor: 70.00},
+          {key: 1, nome: " Marguerita", valor: 70.00},
+        ] 
+      };
+    };
 
-    entrar(nome) {
-        this.setState({
-            nome: nome
-        })
-    }
   render() {
-    return(
-      <View style={sytles.container}>
-        <Text style={{color: '#4B0082', fontSize: 25, margin: 10}}>
-          Aplicação Inicial
+      let pizzasItem = this.state.pizzas.map((v, k) => {
+        return <Picker.Item key={k} value={k} label={v.nome}/>
+      })
+      return(
+        <View style={sytles.container}>
+          <Text style={sytles.menu}></Text>
+          <Picker
+          selectedValue={this.state.pizza}
+          onValueChange={(itemValue, itemIndex) => this.setState({pizza: itemValue})}
+          >
+          {pizzasItem}
+          </Picker>
+          <Text style={sytles.pizzas}>Você escolheu o sabor: 
+            {this.state.pizzas[this.state.pizza].nome}
           </Text>
-        <Text>
-          Primeiro Projeto - Padrão</Text>
-          <Button title="entrar" onPress={() => this.entrar('Seja bem vindo a aplicação')}
-          />
-          <Text style={{fontSize: 12, color: 'green', textAlign: 'center'}}>
-            {this.state.nome}
+          <Text style={sytles.pizzas}> Valor: R$
+            {this.state.pizzas[this.state.pizza].valor}
           </Text>
-          <Image
-          source={{uri: 'https://inovaveterinaria.com.br/wp-content/uploads/2015/04/gato-sem-raca-INOVA-scaled.jpg'}}
-          style={{width: 300, height: 300}}
+
+          <Switch
+          value={this.state.status}
+          onValueChange={(valorswitch) => this.setState({status: valorswitch})}
+          thumbColor="blue"
           />
 
-        <Card title='Título' description='Este é um exemplo de Card'
-        />
 
-          <Jobs
-          largura={200} altura={200}
+          <Text style={{textAlign: 'center', fontSize: 40}}>
+            {(this.state.status) ? "Ativo " : "Inativo"}
+          </Text>
+
+          <Slider
+          minimumValue={0}
+          maximumValue={100}
+          onValueChange={(valorselecionado) => this.setState({valorslider: valorselecionado})}
+          value={this.state.valorslider}
+          minimumTrackTintColor="#FFFFFF"
+          maximumTrackTintColor="#000000"
           />
-      </View>
+
+          <Text style={{textAlign: 'center', fontSize: 35}}>
+            {this.state.valorslider}
+          </Text>
+        </View>
     );
   }
 }
-export default App;
+
 
 const sytles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "flex-start",
-    backgroundColor: 'yellow',
+    marginTop: 20,
   },
-  title: {
-    fontSize: 16,
-    margin: 8,
+  menu: {
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: 'bold',
   },
-  description: {
-    fontSize: 11,
-    color: 'green',
-  },
-  card: {
-    width: 300,
-    height: 200,
-    padding: 20,
-    borderRadius: 10,
-  },
-})
+  pizzas: {
+    marginTop: 20,
+    fontSize: 20,
+    textAlign: 'center',
+  }, 
+});
 
-class Jobs extends Component {
-    render(){
-        let img = 'https://ciclovivo.com.br/wp-content/uploads/2016/08/foto_natureza_2.jpeg';
-        return(
-            <View>
-                <Image
-                source={{uri: img}}
-                style={{width: this.props.largura, height: this.props.altura}}
-                />
-                <Text style={{textAlign: 'center'}}>Imagem de Natureza</Text>
-            </View>
-        );
-    }
-}
+export default App;
