@@ -1,39 +1,34 @@
-import React, {Component} from "react";
-import {View, Text, StyleSheet, Button, Modal} from 'react-native'
-import Entrar from "./src/Entrar";
+import React, {useState} from "react";
+import {View, Text, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default class App extends Component{
-    constructor(props) {
-      super(props);
-      this.state = {
-        modalVisible: false
-      };
+export default function App() {
+    
+    const [nome, setNome] = useState("Nome XY");
+    const [input, setInput] = useState('');
 
-      this.entrar = this.entrar.bind(this);
-      this.sair = this.sair.bind(this);
-
+    function alteracaoNome() {
+      setNome(input);
+      setInput('');
     }
-
-    entrar() {
-      this.setState({modalVisible:true});
-    }
-    sair(visible) {
-        this.setState({modalVisible: visible});
-    }
-
-    render() {
+  
       return(
           <View style={sytles.container}>
-            <Button title="Entrar" onPress={this.entrar}/>
-            <Modal transparent={true} animationType="slide" visible={this.state.modalVisible}>
-            <View style={{margin: 15, flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-              <Entrar fechar={() => this.sair(false)}/>
-            </View>
-            </Modal>
+            <TextInput
+            placeholder="Digite seu nome: "
+            value={input}
+            onChangeText={(texto) => setInput(texto)}
+            />
+
+            <TouchableOpacity onPress={alteracaoNome}>
+          <Text style={{color: 'red', fontSize: 20}}>Altere o nome</Text>
+            </TouchableOpacity>
+
+            <Text style={{color: 'yellow', fontSize: 25}}>{nome}</Text>
           </View>
       );
-    }
-  }
+}
+  
 const sytles = StyleSheet.create({
   container: {
     flex: 1,
